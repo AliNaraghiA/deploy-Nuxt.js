@@ -10,7 +10,7 @@ ok!
 @ pacakge.json : 
 Remember, the "start": "nuxt start" script in your package.json file should be used to start your application on the server, not the "build": "nuxt build" script. The "build": "nuxt build" script is only used to build your application for production on your local development environment.
 ______________________________________________________________________Cpanel
-
+2/5:You should create the Node.js application in cPanel before uploading your .nuxt directory and other necessary files.
 3- upload the zipped file to your cPanel account. upload the file to the root directory of your domain or subdomain. After uploading, extract the zip file using the "Extract" option in the cPanel File Manager.
 4-In the root directory, there will already be some files like .htaccess, app.js, package.json, and package-lock.json.
 
