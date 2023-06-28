@@ -11,6 +11,49 @@ ok!
 Remember, the "start": "nuxt start" script in your package.json file should be used to start your application on the server, not the "build": "nuxt build" script. The "build": "nuxt build" script is only used to build your application for production on your local development environment.
 ______________________________________________________________________Cpanel
 2/5:You should create the Node.js application in cPanel before uploading your .nuxt directory and other necessary files.
+select correct node v and root then >>application startup file (typically app.js or server.js).
+
+--
+But in the context of a Nuxt.js application, the main entry point is typically nuxt.config.js, where you define the configuration for your Nuxt application, and server/index.js where you define your custom server strapi.io.
+
+Here's an example of a Nuxt.js server setup:
+
+// server/index.js
+const express = require('express')
+const consola = require('consola')
+const { Nuxt, Builder } = require('nuxt')
+const app = express()
+
+// Import and Set Nuxt.js options
+let config = require('../nuxt.config.js')
+config.dev = !(process.env.NODE_ENV === 'production')
+
+async function start () {
+  // Init Nuxt.js
+  const nuxt = new Nuxt(config)
+
+  const { host, port } = nuxt.options.server
+
+  await nuxt.ready()
+  // Build only in dev mode
+  if (config.dev) {
+    const builder = new Builder(nuxt)
+    await builder.build()
+  }
+
+  // Give nuxt middleware to express
+  app.use(nuxt.render)
+
+  // Listen the server
+  app.listen(port, host)
+  consola.ready({
+    message: `Server listening on http://${host}:${port}`,
+    badge: true
+  })
+}
+start()
+In the above code, we are using Express with Nuxt.js to create a server. The server is then started with the Nuxt configuration and listens for incoming requests.
+--
 3- upload the zipped file to your cPanel account. upload the file to the root directory of your domain or subdomain. After uploading, extract the zip file using the "Extract" option in the cPanel File Manager.
 4-In the root directory, there will already be some files like .htaccess, app.js, package.json, and package-lock.json.
 
@@ -36,7 +79,30 @@ In the Node.js app setup in cPanel, click on "Enter the virtual environment". Th
 Run npm install to install the dependencies of your application.
 Run npm run start to start your application nuxtjs.org.
 
-10-
+10-app.js is typically the main file of your Node.js application that starts your server. It is usually the script you would run to start your application, like node app.js.
+11-PM2 is a process manager for Node.js applications. It keeps your application running even if the application crashes or the server reboots. You can install it globally with npm install pm2 -g.
+12-ecosystem.config.js is a configuration file for PM2. It allows you to define various settings for your application, such as the script to start your application, the environment variables to use, and more. You can start your application with PM2 using this configuration file with pm2 start ecosystem.config.js.
+--
+cd in to the project directory if you are not already in there
+Create a file called “ecosystem.config.js” in your project’s root folder this is config
+module.exports = {
+    apps: [
+        { 
+           name: ‘name of app',
+           exec_mode: 'cluster',
+           instances: 'max', // Or a number of instances
+           script: './node_modules/nuxt/bin/nuxt.js',
+           args: 'start',
+           env: {
+               NODE_ENV: "production",
+               HOST: '0.0.0.0',
+               PORT: 35000
+           }
+        }
+    ]
+}
+run pm2 start to start application with PM2
+--
 
 
 ___________________________
