@@ -101,9 +101,25 @@ module.exports = {
         }
     ]
 }
-run pm2 start to start application with PM2
+      run pm2 start to start application with PM2
 --
+-
+Update package.json
+Update your package.json file to include the host and port in the config section and add a deploy script. Replace customport with your actual port and yourdomain with your actual domain.
 
+   "config": {
+     "nuxt": {
+       "host": "0.0.0.0",
+       "port": "customport"
+     }
+   },
+   "scripts": {
+     "dev": "nuxt --host yourdomain --port customport",
+     "build": "nuxt build",
+     "start": "nuxt start",
+     "generate": "nuxt generate",
+     "deploy": "/opt/cpanel/ea-nodejs10/bin/pm2 start /opt/cpanel/ea-nodejs10/bin/npm --name yourpm2name -- start"
+   },
 
 ___________________________
 [static]
